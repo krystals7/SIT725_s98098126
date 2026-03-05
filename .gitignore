@@ -1,0 +1,9 @@
+# Dependencies
+node_modules/
+# Environment (safe to include even if unused)
+.env
+.env.*.local
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
