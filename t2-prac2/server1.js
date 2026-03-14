@@ -1,13 +1,6 @@
-var express = require("express")
-var app = express()
-var port = process.env.port || 3000;
-app.listen(port,()=>{
-console.log("App listening to: "+port)
-});
-
-//const express = require('express');
+const express = require('express');
 const path = require('path');
-//const app = express();
+const app = express();
 const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON bodies (for POST requests)
 app.use(express.json());
@@ -25,8 +18,3 @@ let quotes = [
 app.get('/api/quote', (req, res) => {
 const randomIndex = Math.floor(Math.random() * quotes.length);
 res.json({ quote: quotes[randomIndex] });
-});
-// Optional: POST endpoint to add a new quote
-// Example POST body: { "quote": "Your new inspirational quote." }
-//app.post('/api/quote', (req, res) => {
-//const { quote } = req.body;
