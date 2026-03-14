@@ -1,0 +1,22 @@
+{
+  "name": "sit725_s98098126-t2-prac",
+  "version": "1.0.0",
+  "description": "sit 725 T1 Week 2 prac",
+  "keywords": [
+    "json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krystals7/SIT725_s98098126"
+  },
+  "license": "ISC",
+  "author": "kathrine petersen",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
