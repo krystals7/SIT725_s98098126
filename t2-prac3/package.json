@@ -1,0 +1,32 @@
+{
+  "name": "sit725_s98098126-t2-prac3",
+  "version": "1.0.0",
+  "description": "sit725 week 3 prac",
+  "keywords": [
+    "Nodejs",
+    "Express",
+    "Materialize",
+    "HTML",
+    "JS",
+    "CSS"
+
+  ],
+  "homepage": "https://github.com/krystals7/SIT725_s98098126#readme",
+  "bugs": {
+    "url": "https://github.com/krystals7/SIT725_s98098126/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krystals7/SIT725_s98098126.git"
+  },
+  "license": "MIT",
+  "author": "kathrine petersen",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
