@@ -1,4 +1,4 @@
-.navbar-size {
+navbar-size {
 width: 95%;
 margin: 0 auto;
 }
@@ -12,6 +12,7 @@ nav .brand-logo img {
 display: block;
 height: 50px;
 }
+
 .main-body {
 background-color: #F28487;
 color: white;
