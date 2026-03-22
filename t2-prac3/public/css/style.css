@@ -12,10 +12,9 @@ nav .brand-logo img {
 display: block;
 height: 50px;
 }
-
 .main-body {
-background-color: #F28487;
-color: white;
+background-color: #2e44e8;
+color: rgb(224, 19, 186);
 height: calc(100vh - 64px);
 }
 .materialboxed-image {
@@ -23,13 +22,13 @@ margin: 0 auto;
 height: 400px;
 }
 .click-me-button {
-background-color: #EE6E73;
+background-color: #12c0f5;
 margin-top: 50px;
 }
 .card-reveal {
-color: black;
+color: rgb(26, 227, 69);
 }
 .card-reveal .card-title,
 .card-reveal p {
-color: black;
+color: rgb(35, 237, 85);
 }

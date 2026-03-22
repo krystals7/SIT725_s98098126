@@ -1,15 +1,15 @@
 const cardList = [
 {
-title: "Kitten 2",
-image: "images/kitten2.png",
-link: "About Kitten 2",
-desciption: "Demo desciption about kitten 2"
+title: "Book 2",
+image: "images/book2.jpg",
+link: "About Book 2",
+desciption: "Demo desciption about Book 2"
 },
 {
-title: "Kitten 3",
-image: "images/kitten3.png",
-link: "About Kitten 3",
-desciption: "Demo desciption about kitten 3"
+title: "Book 3",
+image: "images/book3.jpg",
+link: "About Book 3",
+desciption: "Demo desciption about Book 3"
 }
 ]
 const clickMe = () => {
