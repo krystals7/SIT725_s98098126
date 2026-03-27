@@ -47,8 +47,18 @@ $('.materialboxed').materialbox();
 $('#formSubmit').click(()=>{
 submitForm();
 })
-addCards(cardList);
+getProjects();
 $('.modal').modal();
 });
+//addCards(cardList);
+//$('.modal').modal();
+//});
 
+const getProjects = () => {
+$.get('/api/projects',(response) => {
+if(response.statusCode==200){
+addCards(response.data);
+}
+})
+}
 
