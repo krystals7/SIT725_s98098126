@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Get all book items</title>
+</head>
+<body>
+  <h1>Book Menu</h1>
+  <p>Click the button below to get all book items from the server:</p>
+  <button id="fetchBookItemsBtn">Get Book Items</button>
+  <div id="bookItemsDisplay"></div>
+
+  <script>
+    const btn = document.getElementById('fetchBookItemsBtn');
+    const out = document.getElementById('bookItemsDisplay');
+
+    function render(items){
+      out.innerHTML = '';
+      if (!Array.isArray(items) || items.length === 0){
+        out.textContent = 'No items';
+        return;
+      }
+      for (const it of items){
+        const p = document.createElement('p');
+  
+        const price =
+          typeof it.price === 'string'
+            ? it.price
+            : (it.price && it.price.$numberDecimal) || it.price || '';
+        p.textContent = `${it.name} - ${it.currency || 'AUD'} ${price}`;
+        out.appendChild(p);
+      }
+    }
+
+    btn.addEventListener('click', async () => {
+      out.textContent = 'Loading...';
+      try {
+        const res = await fetch('/api/book'); // correct endpoint
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const body = await res.json();        // { statusCode, data, message }
+        render(body.data);
+      } catch (err) {
+        console.error('Error fetching book items:', err);
+        out.textContent = 'Error fetching book items.';
+      }
+    });
+  </script>
+</body>
+</html>
