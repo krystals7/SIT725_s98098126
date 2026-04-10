@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Menu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #bookItemsDisplay {
+      margin-top: 20px;
+    }
+    .book {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .book-title {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #222;
+    }
+    .book-info {
+      color: #555;
+      margin: 5px 0;
+    }
+    .summary {
+      font-style: italic;
+      color: #666;
+      margin-top: 8px;
+    }
+    .price {
+  color: #2e7d32;
+  font-weight: bold;
+}
+  </style>
+</head>
+<body>
+  <h1>Book Collection</h1>
+  <p>Click the button below to fetch all books from the server:</p>
+  <button id="fetchBookItemsBtn">Get All Books</button>
+  
+  <div id="bookItemsDisplay"></div>
+
+  <script>
+    const btn = document.getElementById('fetchBookItemsBtn');
+    const display = document.getElementById('bookItemsDisplay');
+
+    function renderBooks(books) {
+      display.innerHTML = '';
+
+      if (!Array.isArray(books) || books.length === 0) {
+        display.innerHTML = '<p>No books found.</p>';
+        return;
+      }
+
+      books.forEach(book => {
+        const div = document.createElement('div');
+        div.className = 'book';
+        
+        div.innerHTML = `
+  <div class="book-title">${book.title}</div>
+  <div class="book-info"><strong>Author:</strong> ${book.author}</div>
+  <div class="book-info">
+    <strong>Year:</strong> ${book.year} | 
+    <strong>Genre:</strong> ${book.genre}
+  </div>
+  <div class="book-info">
+  <strong>Price:</strong> ${JSON.stringify(book.price)}
+}
+  </div>
+  <div class="summary">${book.summary || 'No summary available.'}</div>
+`;
+        display.appendChild(div);
+      });
+    }
+
+    btn.addEventListener('click', async () => {
+      display.innerHTML = '<p>Loading books...</p>';
+      
+      try {
+        const res = await fetch('/api/books');   // ← Updated endpoint (recommended)
+
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+        
+        const result = await res.json();
+console.log(result);
+        
+        console.log(result);
+renderBooks(result.data || result.books || result);  // handles both {data: [...]} and direct array
+      } catch (err) {
+        console.error('Error fetching books:', err);
+        display.innerHTML = '<p style="color: red;">Error fetching books. Please try again.</p>';
+      }
+    });
+  </script>
+</body>
+</html>
