@@ -56,7 +56,7 @@
   </style>
 </head>
 <body>
-  <h1>Book Collection</h1>
+  <h1>Books Catalogue developed by s98098126</h1>
   <p>Click the button below to fetch all books from the server:</p>
   <button id="fetchBookItemsBtn">Get All Books</button>
   
@@ -64,52 +64,98 @@
 
   <script>
     const btn = document.getElementById('fetchBookItemsBtn');
-    const display = document.getElementById('bookItemsDisplay');
+const display = document.getElementById('bookItemsDisplay');
 
-    function renderBooks(books) {
-      display.innerHTML = '';
+function renderBooks(books) {
+  display.innerHTML = '';
 
-      if (!Array.isArray(books) || books.length === 0) {
-        display.innerHTML = '<p>No books found.</p>';
-        return;
-      }
+  if (!Array.isArray(books) || books.length === 0) {
+    display.innerHTML = '<p>No books found.</p>';
+    return;
+  }
 
-      books.forEach(book => {
-        const div = document.createElement('div');
-        div.className = 'book';
-        
-        div.innerHTML = `
-  <div class="book-title">${book.title}</div>
-  <div class="book-info"><strong>Author:</strong> ${book.author}</div>
-  <div class="book-info">
-    <strong>Year:</strong> ${book.year} | 
-    <strong>Genre:</strong> ${book.genre}
-  </div>
-  <div class="book-info">
-    <strong>Price:</strong> $${book.price?.toFixed(2) || 'N/A'}
-  </div>
-  <div class="summary">${book.summary || 'No summary available.'}</div>
-`;
-        display.appendChild(div);
-      });
-    }
+  books.forEach(book => {
+    const div = document.createElement('div');
+    div.className = 'book';
+    div.style.cursor = 'pointer';
 
-    btn.addEventListener('click', async () => {
-      display.innerHTML = '<p>Loading books...</p>';
-      
-      try {
-        const res = await fetch('/api/books');   // ← Updated endpoint (recommended)
+    div.innerHTML = `
+      <div class="book-title">${book.title}</div>
+      <div class="book-info">
+        <strong>Price:</strong> ${
+          book.price != null
+            ? `$${Number(book.price).toFixed(2)}`
+            : 'N/A'
+        }
+      </div>
+    `;
 
-        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
-        
-        const result = await res.json();
-        
-        renderBooks(result.data || result);   // handles both {data: [...]} and direct array
-      } catch (err) {
-        console.error('Error fetching books:', err);
-        display.innerHTML = '<p style="color: red;">Error fetching books. Please try again.</p>';
-      }
+    // ✅ FIX: attach click to whole card (NOT querySelector)
+    div.addEventListener('click', () => {
+      console.log("Clicked book ID:", book._id);
+      loadSingleBook(book._id);
     });
+
+    display.appendChild(div);
+  });
+}
+
+
+async function loadSingleBook(id) {
+  try {
+    display.innerHTML = '<p>Loading book details...</p>';
+
+    const res = await fetch(`/api/books/${id}`);
+    if (!res.ok) throw new Error('Failed to fetch book');
+
+    const result = await res.json();
+    console.log(result);
+
+    const book = result.data || result.book || result;
+
+    display.innerHTML = `
+      <div class="book">
+        <div class="book-title">${book.title}</div>
+        <div class="book-info"><strong>Author:</strong> ${book.author}</div>
+        <div class="book-info"><strong>Year:</strong> ${book.year}</div>
+        <div class="book-info"><strong>Genre:</strong> ${book.genre}</div>
+        <div class="book-info">
+          <strong>Price:</strong> ${
+            book.price != null && !isNaN(book.price)
+              ? `$${Number(book.price).toFixed(2)}`
+              : 'N/A'
+          }
+        </div>
+        <div class="summary">${book.summary || 'No summary available.'}</div>
+
+        <br />
+        <button onclick="location.reload()">← Back</button>
+      </div>
+    `;
+  } catch (err) {
+    console.error(err);
+    display.innerHTML = '<p style="color:red;">Error loading book.</p>';
+  }
+
+}
+
+btn.addEventListener('click', async () => {
+  display.innerHTML = '<p>Loading books...</p>';
+
+  try {
+    const res = await fetch('/api/books');
+
+    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+    const result = await res.json();
+
+    renderBooks(result.data || result.books || result);
+
+  } catch (err) {
+    console.error('Error fetching books:', err);
+    display.innerHTML = '<p style="color: red;">Error fetching books. Please try again.</p>';
+  }
+});
   </script>
 </body>
 </html>

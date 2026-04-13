@@ -1,75 +1,42 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
 
-const bookRoutes = require('./routes/bookRoute');
+const booksRouter = require('./src/routes/books');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// ====================== Middleware ======================
+console.log("=== SERVER.JS LOADED ===");
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ====================== Routes ======================
-app.use('/api/books', bookRoutes);
-
-// Home route
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
-});
-
-// ====================== Error Handling ======================
-app.use((req, res) => {
-  res.status(404).json({
-    statusCode: 404,
-    success: false,
-    message: 'Route not found'
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error(' Server Error:', err.message);
-  res.status(500).json({
-    statusCode: 500,
-    success: false,
-    message: 'Internal Server Error'
-  });
-});
-
-// ====================== Database Connection ======================
-const connectDB = async () => {
-  try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/bookDB');
-    console.log('MongoDB Connected Successfully to bookDB');
-  } catch (error) {
-    console.error(' MongoDB Connection Failed:', error.message);
-    process.exit(1);
+// VERY LOUD GLOBAL DEBUG MIDDLEWARE
+app.use((req, res, next) => {
+  console.log(` GLOBAL [${req.method}] ${req.url}`);
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log(`   BODY:`, JSON.stringify(req.body));
   }
-};
+  next();
+});
 
-// ====================== Start Server ======================
-const startServer = async () => {
-  try {
-    await connectDB();
+app.use('/api/books', booksRouter);
 
-    app.listen(PORT, () => {
-      console.log(` Server is running on http://localhost:${PORT}`);
-      console.log(` API endpoint: http://localhost:${PORT}/api/books`);
-      console.log(` Frontend: http://localhost:${PORT}`);
-      console.log(` Health check: http://localhost:${PORT}/health`);
-    });
-  } catch (err) {
-    console.error('Failed to start server:', err.message);
-  }
-};
+app.get('/', (req, res) => res.send('Book API is running...'));
 
-startServer();
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/bookdb')
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('MongoDB error:', err));
+}
+
+// ... (keep everything above)
+
+// Start server only if run directly (not in tests)
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
