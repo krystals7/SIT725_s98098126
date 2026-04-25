@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Server Time</title>
+  
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f4f4f9;
+    }
+    h1 {
+      color: #333;
+    }
+    #time {
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: #007bff;
+      margin: 20px 0;
+      letter-spacing: 2px;
+    }
+    p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Current Server Time</h1>
+  <p>Time is updating live from the server:</p>
+  
+  <div id="time">--:--:--</div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="scripts.js"></script>
+</body>
+</html>
