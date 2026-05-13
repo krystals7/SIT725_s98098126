@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const bookRoutes = require('./routes/haircutRoute');
+const haircurtRoutes = require('./routes/haircutRoute');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
