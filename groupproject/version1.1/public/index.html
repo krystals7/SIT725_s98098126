@@ -48,7 +48,7 @@
     button {
       padding: 12px 24px;
       font-size: 16px;
-      background-color: #c45a9c; /* Pinkish accent to match theme */
+      background-color: #c45a9c;
       color: white;
       border: none;
       border-radius: 5px;
@@ -82,11 +82,11 @@
       margin-bottom: 8px;
     }
     .haircut-info {
-      color: #2a6ca8; /* Slightly lighter blue for info */
+      color: #2a6ca8;
       margin: 6px 0;
     }
     .price {
-      color: #1e8c4d; /* Green for price - good contrast */
+      color: #1e8c4d;
       font-weight: bold;
       font-size: 1.1em;
     }
@@ -94,6 +94,17 @@
       font-style: italic;
       color: #2a6ca8;
       margin-top: 10px;
+    }
+    .phone {
+      color: #1e8c4d;
+      font-weight: bold;
+    }
+    .phone a {
+      color: #1e8c4d;
+      text-decoration: none;
+    }
+    .phone a:hover {
+      text-decoration: underline;
     }
 
     .back-btn {
@@ -136,11 +147,16 @@
         const div = document.createElement('div');
         div.className = 'haircut';
 
+        const phoneHTML = haircut.phone 
+          ? `<div class="haircut-info phone"><strong>Phone:</strong> <a href="tel:${haircut.phone}">${haircut.phone}</a></div>`
+          : `<div class="haircut-info"><strong>Phone:</strong> Not available</div>`;
+
         div.innerHTML = `
           <div class="haircut-title">${haircut.salon || haircut.name || 'Unnamed Salon'}</div>
           <div class="haircut-info"><strong>Stylist:</strong> ${haircut.stylist || 'Various'}</div>
           <div class="haircut-info"><strong>Location:</strong> ${haircut.location || 'Not specified'}</div>
           <div class="haircut-info"><strong>Postcode:</strong> ${haircut.postcode || '—'}</div>
+          ${phoneHTML}
           <div class="haircut-info"><strong>Service:</strong> ${haircut.service || 'Haircut'}</div>
           <div class="price">
             ${haircut.price != null ? `$${Number(haircut.price).toFixed(2)}` : 'Price on request'}
@@ -165,12 +181,17 @@
         const result = await res.json();
         const haircut = result.data || result.haircut || result;
 
+        const phoneHTML = haircut.phone 
+          ? `<div class="haircut-info phone"><strong>Phone:</strong> <a href="tel:${haircut.phone}">${haircut.phone}</a></div>`
+          : `<div class="haircut-info"><strong>Phone:</strong> Not available</div>`;
+
         display.innerHTML = `
           <div class="haircut">
             <div class="haircut-title">${haircut.salon || haircut.name}</div>
             <div class="haircut-info"><strong>Stylist:</strong> ${haircut.stylist || 'N/A'}</div>
             <div class="haircut-info"><strong>Location:</strong> ${haircut.location || 'N/A'}</div>
             <div class="haircut-info"><strong>Postcode:</strong> ${haircut.postcode || 'N/A'}</div>
+            ${phoneHTML}
             <div class="haircut-info"><strong>Service:</strong> ${haircut.service || 'Haircut'}</div>
             <div class="haircut-info"><strong>Duration:</strong> ${haircut.duration || '60 min'}</div>
             <div class="price">
@@ -200,7 +221,6 @@
 
       try {
         const res = await fetch(`/api/haircuts?postcode=${encodeURIComponent(postcode)}`);
-
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         const result = await res.json();
@@ -218,7 +238,6 @@
 
       try {
         const res = await fetch('/api/haircuts');
-
         if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
 
         const result = await res.json();
@@ -232,13 +251,9 @@
     }
 
     searchBtn.addEventListener('click', searchByPostcode);
-
     postcodeInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        searchByPostcode();
-      }
+      if (e.key === 'Enter') searchByPostcode();
     });
-
     fetchAllBtn.addEventListener('click', fetchAll);
   </script>
 </body>

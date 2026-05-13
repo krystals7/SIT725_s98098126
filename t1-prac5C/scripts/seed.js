@@ -39,6 +39,24 @@ const booksData = [
     summary: "In a ruined Italian villa at the end of WWII, four strangers with intersecting pasts confront memory, identity, and loss."
   },
   {
+    id: "b6",
+    title: "random book",
+    author: "kathrine petersen",
+    year: 1990,
+    genre: "romance",
+    price: 20.95,
+    summary: "random book"
+  },
+  {
+    id: "b7",
+    title: "random book 2",
+    author: "some person",
+    year: 2010,
+    genre: "adventure",
+    price: 15.75,
+    summary: "random book 2"
+  },
+  {
     id: "b5",
     title: "Small Gods",
     author: "Terry Pratchett",

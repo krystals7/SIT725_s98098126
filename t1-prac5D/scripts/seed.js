@@ -46,37 +46,61 @@ const booksData = [
     genre: "Fantasy",
     price: 14.50,
     summary: "In Omnia, the god Om returns as a tortoise, and novice Brutha must confront dogma, empire, and the nature of belief. The Discworld is flat and is orbited by its sun, but Omnian"
-  }
+  },
+  {
+    id: "b6",
+    title: "random book",
+    author: "kathrine petersen",
+    year: 2010,
+    genre: "romance",
+    price: 19.50,
+    summary: "random book"
+  },
+  {
+    id: "b7",
+    title: "random book 2",
+    author: "some person",
+    year: 2012,
+    genre: "adventure",
+    price: 25.40,
+    summary: "random book 2"
+  },
+  {
+    id: "b8",
+    title: "random book 3",
+    author: "random person",
+    year: 2025,
+    genre: "comedy",
+    price: 16.95,
+    summary: "random book 3"
+  },
 ];
 
 const seedDatabase = async () => {
   try {
-    // Connect to MongoDB
-    await mongoose.connect('mongodb://127.0.0.1:27017/bookDB', {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    await mongoose.connect('mongodb://127.0.0.1:27017/bookDB');
+    console.log('Connected to MongoDB');
 
-    console.log(' Connected to MongoDB');
+    // Clear existing data
+    const deleteResult = await Book.deleteMany({});
+    console.log(`Cleared ${deleteResult.deletedCount} existing books`);
 
-    // Create unique index on id (if not exists)
-    await Book.collection.createIndex({ id: 1 }, { unique: true });
-
-    // Delete existing books and insert new ones
-    await Book.deleteMany({});
-    console.log('  Cleared existing books');
-
+    // Insert new data
     const result = await Book.insertMany(booksData);
-    console.log(` Successfully seeded ${result.length} books into the database`);
+    console.log(`Successfully seeded ${result.length} books`);
+
+    // Verify by counting
+    const count = await Book.countDocuments();
+    console.log(`Total books in DB after seeding: ${count}`);
 
   } catch (error) {
-    console.error(' Seeding failed:', error.message);
+    console.error('Seeding failed:');
+    console.error(error);           // Full error
   } finally {
     await mongoose.connection.close();
-    console.log('🔌 Database connection closed');
+    console.log('Database connection closed');
     process.exit(0);
   }
 };
 
-// Run the seeder
 seedDatabase();
