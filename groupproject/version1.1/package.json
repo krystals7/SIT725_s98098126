@@ -1,9 +1,9 @@
 {
-  "name": "week5_5",
+  "name": "hairdresser-project",
   "version": "1.0.0",
-  "description": "Book API with Express and MongoDB",
+  "description": "Hairdresser search API with Express and MongoDB",
   "main": "server.js",
-  "author": "Kathrine Petersen",
+  "author": "Group Project",
   "license": "ISC",
   "scripts": {
     "start": "node server.js",
