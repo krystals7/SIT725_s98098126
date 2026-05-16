@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Locate a Haircut</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #ffe6f0; /* Pale Pink */
+      color: #1e4d8c; /* Medium Blue */
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #1e4d8c;
+      margin-bottom: 10px;
+    }
+    p {
+      color: #1e4d8c;
+      margin-bottom: 20px;
+    }
+
+    /* Search Bar */
+    .search-container {
+      margin: 25px auto;
+      max-width: 500px;
+    }
+    #postcodeInput {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 17px;
+      border: 2px solid #e8b4d0;
+      border-radius: 8px;
+      outline: none;
+      text-align: center;
+      background-color: white;
+    }
+    #postcodeInput:focus {
+      border-color: #c45a9c;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #c45a9c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #a63f7f;
+    }
+
+    #haircutItemsDisplay {
+      margin-top: 30px;
+      text-align: left;
+    }
+    .haircut {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .haircut:hover {
+      transform: translateY(-5px);
+    }
+    .haircut-title {
+      font-size: 1.4em;
+      font-weight: bold;
+      color: #1e4d8c;
+      margin-bottom: 8px;
+    }
+    .haircut-info {
+      color: #2a6ca8;
+      margin: 6px 0;
+    }
+    .price {
+      color: #1e8c4d;
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+    .description {
+      font-style: italic;
+      color: #2a6ca8;
+      margin-top: 10px;
+    }
+    .phone {
+      color: #1e8c4d;
+      font-weight: bold;
+    }
+    .phone a {
+      color: #1e8c4d;
+      text-decoration: none;
+    }
+    .phone a:hover {
+      text-decoration: underline;
+    }
+
+    .back-btn {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Locate a Haircut</h1>
+    <p>Find haircut services near you by entering your postcode</p>
+
+    <!-- Postcode Search -->
+    <div class="search-container">
+      <input type="text" id="postcodeInput" placeholder="Enter postcode (e.g. 2000)" maxlength="8">
+      <br><br>
+      <button id="searchBtn">Search Haircuts Near Me</button>
+    </div>
+
+    <button id="fetchAllBtn">Show All Haircut Services</button>
+    
+    <div id="haircutItemsDisplay"></div>
+  </div>
+
+  <script>
+    const searchBtn = document.getElementById('searchBtn');
+    const fetchAllBtn = document.getElementById('fetchAllBtn');
+    const display = document.getElementById('haircutItemsDisplay');
+    const postcodeInput = document.getElementById('postcodeInput');
+
+    function renderHaircuts(haircuts) {
+      display.innerHTML = '';
+
+      if (!Array.isArray(haircuts) || haircuts.length === 0) {
+        display.innerHTML = '<p>No haircut services found in this area.</p>';
+        return;
+      }
+
+      haircuts.forEach(haircut => {
+        const div = document.createElement('div');
+        div.className = 'haircut';
+
+        const phoneHTML = haircut.phone 
+          ? `<div class="haircut-info phone"><strong>Phone:</strong> <a href="tel:${haircut.phone}">${haircut.phone}</a></div>`
+          : `<div class="haircut-info"><strong>Phone:</strong> Not available</div>`;
+
+        div.innerHTML = `
+          <div class="haircut-title">${haircut.salon || haircut.name || 'Unnamed Salon'}</div>
+          <div class="haircut-info"><strong>Stylist:</strong> ${haircut.stylist || 'Various'}</div>
+          <div class="haircut-info"><strong>Location:</strong> ${haircut.location || 'Not specified'}</div>
+          <div class="haircut-info"><strong>Postcode:</strong> ${haircut.postcode || '—'}</div>
+          ${phoneHTML}
+          <div class="haircut-info"><strong>Service:</strong> ${haircut.service || 'Haircut'}</div>
+          <div class="price">
+            ${haircut.price != null ? `$${Number(haircut.price).toFixed(2)}` : 'Price on request'}
+          </div>
+        `;
+
+        div.addEventListener('click', () => {
+          loadSingleHaircut(haircut._id || haircut.id);
+        });
+
+        display.appendChild(div);
+      });
+    }
+
+    async function loadSingleHaircut(id) {
+      try {
+        display.innerHTML = '<p>Loading details...</p>';
+
+        const res = await fetch(`/api/haircuts/${id}`);
+        if (!res.ok) throw new Error('Failed to fetch service');
+
+        const result = await res.json();
+        const haircut = result.data || result.haircut || result;
+
+        const phoneHTML = haircut.phone 
+          ? `<div class="haircut-info phone"><strong>Phone:</strong> <a href="tel:${haircut.phone}">${haircut.phone}</a></div>`
+          : `<div class="haircut-info"><strong>Phone:</strong> Not available</div>`;
+
+        display.innerHTML = `
+          <div class="haircut">
+            <div class="haircut-title">${haircut.salon || haircut.name}</div>
+            <div class="haircut-info"><strong>Stylist:</strong> ${haircut.stylist || 'N/A'}</div>
+            <div class="haircut-info"><strong>Location:</strong> ${haircut.location || 'N/A'}</div>
+            <div class="haircut-info"><strong>Postcode:</strong> ${haircut.postcode || 'N/A'}</div>
+            ${phoneHTML}
+            <div class="haircut-info"><strong>Service:</strong> ${haircut.service || 'Haircut'}</div>
+            <div class="haircut-info"><strong>Duration:</strong> ${haircut.duration || '60 min'}</div>
+            <div class="price">
+              ${haircut.price != null ? `$${Number(haircut.price).toFixed(2)}` : 'Price on request'}
+            </div>
+            <div class="description">${haircut.description || haircut.summary || 'No description available.'}</div>
+
+            <br />
+            <button class="back-btn" onclick="location.reload()">← Back to Results</button>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        display.innerHTML = '<p style="color:red;">Error loading details.</p>';
+      }
+    }
+
+    async function searchByPostcode() {
+      const postcode = postcodeInput.value.trim();
+
+      if (!postcode) {
+        alert("Please enter a postcode");
+        return;
+      }
+
+      display.innerHTML = `<p>Searching for services near ${postcode}...</p>`;
+
+      try {
+        const res = await fetch(`/api/haircuts?postcode=${encodeURIComponent(postcode)}`);
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+        const result = await res.json();
+        const haircuts = result.data || result.haircuts || result;
+
+        renderHaircuts(haircuts);
+      } catch (err) {
+        console.error(err);
+        display.innerHTML = '<p style="color: red;">Error searching by postcode. Please try again.</p>';
+      }
+    }
+
+    async function fetchAll() {
+      display.innerHTML = '<p>Loading all services...</p>';
+
+      try {
+        const res = await fetch('/api/haircuts');
+        if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+
+        const result = await res.json();
+        const haircuts = result.data || result.haircuts || result;
+
+        renderHaircuts(haircuts);
+      } catch (err) {
+        console.error(err);
+        display.innerHTML = '<p style="color: red;">Error fetching services.</p>';
+      }
+    }
+
+    searchBtn.addEventListener('click', searchByPostcode);
+    postcodeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') searchByPostcode();
+    });
+    fetchAllBtn.addEventListener('click', fetchAll);
+  </script>
+</body>
+</html>
