@@ -1,6 +1,5 @@
-// seed.js  (put this in your root folder)
 const mongoose = require('mongoose');
-const Haircut = require('../models/haircutModel'); 
+const Haircut = require('../models/haircutModel');
 
 const haircutData = [
   { id: 'h1', salonType: 'Hairdresser', name: 'Sage Beauty Salon', stylist: 'Bobby Grear', location: '2a Jaques Avenue Bondi Beach NSW 2026', postcode: '2026', phone: '(02) 7912 4347', service: 'Haircuts', price: 110.25, duration: '60 min', description: 'Professional haircut service in Bondi Beach.' },
@@ -13,19 +12,20 @@ const haircutData = [
 const seedDB = async () => {
   try {
     await mongoose.connect('mongodb://127.0.0.1:27017/haircutDB');
-    console.log('Connected to MongoDB');
+    console.log('✅ Connected to MongoDB');
 
     await Haircut.deleteMany({});
-    console.log('Existing haircuts deleted');
+    console.log('🗑️ Existing haircuts deleted');
 
     const inserted = await Haircut.insertMany(haircutData);
-    console.log('Successfully seeded ${inserted.length} haircuts!`);
+    
+    console.log(`✅ Successfully seeded ${inserted.length} haircuts!`);
 
   } catch (error) {
-    console.error('Seeding Error:', error.message);
+    console.error('❌ Seeding Error:', error.message);
   } finally {
     await mongoose.connection.close();
-    console.log('Connection closed');
+    console.log('🔌 Connection closed');
   }
 };
 
