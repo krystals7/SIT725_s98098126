@@ -298,6 +298,12 @@
         alert("Please enter a postcode");
         return;
       }
+      // Validate only 4-digit postcode input
+if (!/^[0-9]{4}$/.test(postcode)) {
+  display.innerHTML =
+    '<p class="message" style="color:red;">Please enter a valid 4-digit postcode.</p>';
+  return;
+}
 
       display.innerHTML = `<p class="message">Searching for services near ${postcode}...</p>`;
 
